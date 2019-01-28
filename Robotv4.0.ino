@@ -1,4 +1,4 @@
-#include <Wire.h>
+ #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 
 // Create the motor shield object with the default I2C address
@@ -13,7 +13,8 @@ Adafruit_DCMotor *motorFrontRight = AFMS.getMotor(3);
 Adafruit_DCMotor *motorFrontLeft = AFMS.getMotor(4);
 
 // PIN tracker sensors
-
+#define Right_Intersection      11
+#define Left_Intersection       12
 #define leftTrackerLeft         6
 #define leftTrackerCenter       7
 #define leftTrackerRight        8
@@ -52,20 +53,32 @@ unsigned int distance_sm=0;
 
 
 void loop() {
-
+  int DigitalValue = digitalRead(12);
+  Serial.println(DigitalValue);
+Serial.println(11);
 Serial.println(distance);
 scanPlace();
 AFMS.begin();
 
+if (digitalRead(12)) {
+      do {
+        turnLeft2();
+        }
+        while (digitalRead(6));
+    }
+    else if (digitalRead(11)) {
+      do {
+        turnRight2();
+        }
+        while (digitalRead(6));
+    }
 if ((!digitalRead(6)) && (!digitalRead(7)) && (!digitalRead(8))) {
   stopMotor(); 
 }
- else if ((digitalRead(6)) && (digitalRead(7)) && (digitalRead(8))) {
+ 
+else if ((digitalRead(7)) && (distance > 15))  {
     startMotor();
-  }
-else if ((digitalRead(7)) && (distance > 10))  {
-    startMotor();
-     if ((distance < 10) || (!digitalRead(7))) {
+     if ((distance < 15) || (!digitalRead(7))) {
       stopMotor();
     }
     
@@ -79,9 +92,6 @@ else if (digitalRead(8)) {
       turnRight2();
     }
 
-else if ((digitalRead(6)) && (digitalRead(8))){
-    startMotor();
-    }
     
 else if ((digitalRead(6)) && (digitalRead(7))) {
       turnRight2();
@@ -90,6 +100,8 @@ else if ((digitalRead(6)) && (digitalRead(7))) {
 else if ((digitalRead(8)) && (digitalRead(7))) {
       turnLeft2();
     }   
+    
+    
 /*else {
   for (int i=40; i<=180; i=i+10){
       turnLeft2(); //???????????????????????????? Передача параметра функции
@@ -157,23 +169,23 @@ void turnLeft(){
 }
 
 void turnLeft2(){
-  motorFrontLeft->setSpeed(60);
+  motorFrontLeft->setSpeed(190);
   motorFrontLeft->run(BACKWARD);
-  motorFrontRight->setSpeed(60);
+  motorFrontRight->setSpeed(190);
   motorFrontRight->run(FORWARD);
-  motorRearLeft->setSpeed(60);
+  motorRearLeft->setSpeed(190);
   motorRearLeft->run(BACKWARD);
-  motorRearRight->setSpeed(60);
+  motorRearRight->setSpeed(190);
   motorRearRight->run(FORWARD);
 }
 
 void turnRight2(){
-  motorFrontRight->setSpeed(60);
+  motorFrontRight->setSpeed(190);
   motorFrontRight->run(BACKWARD);
-  motorFrontLeft->setSpeed(60);
+  motorFrontLeft->setSpeed(190);
   motorFrontLeft->run(FORWARD);
-  motorRearRight->setSpeed(60);
+  motorRearRight->setSpeed(190);
   motorRearRight->run(BACKWARD);
-  motorRearLeft->setSpeed(60);
+  motorRearLeft->setSpeed(190);
   motorRearLeft->run(FORWARD);
 }
